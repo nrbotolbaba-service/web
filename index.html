@@ -1,0 +1,113 @@
+indext.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Scaffolding & Certifications - Verification Portal</title>
+    <!-- QRCode.js লাইব্রেরি যা অটো কিউআর কোড তৈরি করবে -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
+        .container { max-width: 600px; background: #fff; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 2px solid #004080; padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-img { max-width: 100px; height: auto; margin-bottom: 8px; }
+        .header h2 { margin: 0; color: #004080; font-size: 20px; }
+        .profile-img { width: 120px; height: 140px; border: 1px solid #ccc; object-fit: cover; display: block; margin: auto; border-radius: 4px; }
+        .info-row { display: flex; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .label { font-weight: bold; width: 40%; color: #333; font-size: 13px; }
+        .value { width: 60%; color: #555; font-size: 13px; word-break: break-all; }
+        .error { text-align: center; color: red; font-weight: bold; padding: 30px; font-size: 16px; }
+        .loading { text-align: center; color: #004080; padding: 30px; font-size: 16px; font-weight: bold; }
+
+        /* কিউআর কোড সেকশন */
+        .qr-section { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ccc; }
+        #qrcode { display: inline-block; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 4px; }
+        .qr-text { font-size: 12px; color: #666; margin-top: 5px; }
+
+        .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #777; border-top: 1px solid #ddd; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <div class="header">
+        <h2>Global Scaffolding & Certifications</h2>
+        <p style="margin: 5px 0 0; font-size: 12px; color: #555;">Certificate Verification Portal</p>
+    </div>
+
+    <div id="contentArea">
+        <div class="loading">⏳ Loading Certificate Data...</div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 Global Scaffolding & Certifications. All Rights Reserved.
+    </div>
+</div>
+
+<script>
+    // নতুন গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপ ইউআরএল এখানে বসানো হয়েছে:
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhOv_zAXYey-WJ64VtL8eY0bYca273OjWE3kohBZaOAvJ2KUGE_UPjr_5SapYraDNr3g/exec";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    async function fetchCertificateData() {
+        const container = document.getElementById('contentArea');
+
+        if (!id) {
+            container.innerHTML = '<div class="error">❌ Please provide a valid Certificate ID in the link!</div>';
+            return;
+        }
+
+        try {
+            let response = await fetch(`${WEB_APP_URL}?id=${id}`);
+            let data = await response.json();
+
+            if (!data.ID) {
+                container.innerHTML = '<div class="error">❌ Invalid ID or Record Not Found in Database!</div>';
+                return;
+            }
+
+            // ডেটা সফলভাবে পেলে পেজে শো করানোর লেআউট
+            container.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img id="photo" src="${data['Photo URL'] || 'https://via.placeholder.com/120x140?text=No+Photo'}" alt="Candidate Photo" class="profile-img">
+                    <h3 style="color: #004080; margin-top: 10px; font-size: 16px;">CERT-ID: ${data.ID}</h3>
+                </div>
+
+                <div class="info-row"><div class="label">CANDIDATE NAME</div><div class="value">${data['NAME'] || ''}</div></div>
+                <div class="info-row"><div class="label">TYPE</div><div class="value">${data['Type'] || ''}</div></div>
+                <div class="info-row"><div class="label">COMPANY NAME</div><div class="value">${data['Company Name'] || ''}</div></div>
+                <div class="info-row"><div class="label">LOCATION</div><div class="value">${data['Location'] || ''}</div></div>
+                <div class="info-row"><div class="label">COUNTRY</div><div class="value">${data['Country'] || ''}</div></div>
+                <div class="info-row"><div class="label">CERTIFIED AS</div><div class="value">${data['Certified As'] || ''}</div></div>
+                <div class="info-row"><div class="label">IQAMA / ID NO</div><div class="value">${data['Iqama / ID No'] || ''}</div></div>
+                <div class="info-row"><div class="label">ISSUE DATE</div><div class="value">${data['Issue Date'] || ''}</div></div>
+                <div class="info-row"><div class="label">EXPIRY DATE</div><div class="value">${data['Expiry Date'] || ''}</div></div>
+
+                <!-- অটো কিউআর কোড জেনারেটর সেকশন -->
+                <div class="qr-section">
+                    <div id="qrcode"></div>
+                    <div class="qr-text">Scan this QR to verify this certificate</div>
+                </div>
+            `;
+
+            // বর্তমান পেজের লিংকের জন্য অটো কিউআর কোড জেনারেট হবে
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 110,
+                height: 110,
+            });
+
+        } catch (error) {
+            container.innerHTML = '<div class="error">⚠️ Failed to connect to database. Please try again later.</div>';
+        }
+    }
+
+    fetchCertificateData();
+</script>
+
+</body>
+</html>
