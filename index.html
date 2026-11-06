@@ -11,103 +11,274 @@ indext.html
     <style>
         body { font-family: Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 10px; }
         .container { max-width: 600px; background: #fff; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { text-align: center; border-bottom: 2px solid #004080; padding-bottom: 15px; margin-bottom: 20px; }
-        .logo-img { max-width: 100px; height: auto; margin-bottom: 8px; }
-        .header h2 { margin: 0; color: #004080; font-size: 20px; }
-        .profile-img { width: 120px; height: 140px; border: 1px solid #ccc; object-fit: cover; display: block; margin: auto; border-radius: 4px; }
-        .info-row { display: flex; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-        .label { font-weight: bold; width: 40%; color: #333; font-size: 13px; }
-        .value { width: 60%; color: #555; font-size: 13px; word-break: break-all; }
-        .error { text-align: center; color: red; font-weight: bold; padding: 30px; font-size: 16px; }
-        .loading { text-align: center; color: #004080; padding: 30px; font-size: 16px; font-weight: bold; }
-
-        /* কিউআর কোড সেকশন */
-        .qr-section { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ccc; }
-        #qrcode { display: inline-block; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 4px; }
-        .qr-text { font-size: 12px; color: #666; margin-top: 5px; }
-
-        .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #777; border-top: 1px solid #ddd; padding-top: 10px; }
-    </style>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NR BOTOLBABA SERVICES - Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-white font-sans min-h-screen">
 
-<div class="container" id="mainContainer">
-    <div class="header">
-        <h2>Global Scaffolding & Certifications</h2>
-        <p style="margin: 5px 0 0; font-size: 12px; color: #555;">Certificate Verification Portal</p>
+    <!-- Navbar -->
+    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-yellow-400">NR BOTOLBABA SERVICES</h1>
+        <div id="navUserArea" class="flex items-center gap-4">
+            <!-- ডাইনামিক ইউজার বা লগআউট বাটন এখানে আসবে -->
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto p-6">
+        
+        <!-- Main Auth Section (Hidden after login) -->
+        <div id="authContainer" class="max-w-md mx-auto bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700 my-10">
+            <h2 class="text-2xl font-bold text-center text-yellow-400 mb-2">NR BOTOLBABA SERVICES</h2>
+            <p class="text-xs text-center text-gray-400 mb-6">সেবা পেতে একাউন্ট তৈরি করুন অথবা লগইন করুন</p>
+
+            <!-- Tab Switcher -->
+            <div class="flex justify-around mb-6 border-b border-gray-700 pb-2">
+                <button onclick="switchTab('register')" id="regTabBtn" class="text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1 text-sm">রেজিস্ট্রেশন</button>
+                <button onclick="switchTab('login')" id="loginTabBtn" class="text-gray-400 hover:text-white pb-1 text-sm">লগইন</button>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="mb-3">
+                    <label class="block text-gray-300 text-xs mb-1">নাম (NAME)</label>
+                    <input type="text" id="regName" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-300 text-xs mb-1">ইমেইল অ্যাড্রেস (EMAIL)</label>
+                    <input type="email" id="regEmail" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-300 text-xs mb-1">পাসওয়ার্ড (PASSWORD)</label>
+                    <input type="password" id="regPass" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-300 text-xs mb-1">পেমেন্ট মোবাইল নাম্বার (PAYMENT NUMBER)</label>
+                    <input type="text" id="regPaymentNum" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400" placeholder="বিকাশ/নগদ নাম্বার">
+                </div>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 font-bold py-2 rounded text-sm transition mt-2">একাউন্ট তৈরি করুন</button>
+                <p id="regMsg" class="text-center text-xs mt-3"></p>
+            </form>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="hidden" onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-300 text-xs mb-1">ইমেইল অ্যাড্রেস</label>
+                    <input type="email" id="loginEmail" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-300 text-xs mb-1">পাসওয়ার্ড</label>
+                    <input type="password" id="loginPass" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-sm focus:outline-none focus:border-yellow-400">
+                </div>
+                <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded text-sm transition">লগইন করুন</button>
+                <p id="loginMsg" class="text-center text-xs mt-3"></p>
+            </form>
+        </div>
+
+        <!-- Dashboard / Services Section (Shown after login) -->
+        <div id="dashboardContainer" class="hidden">
+            <div class="flex flex-wrap justify-between items-center mb-6 gap-4 bg-gray-800 p-4 rounded-xl border border-gray-700">
+                <h2 class="text-xl font-semibold" id="welcomeMsg">স্বাগতম!</h2>
+                <div class="text-sm text-yellow-400">
+                    📞 সেবার জন্য যোগাযোগ করুন: <strong>+8801XXXXXXXXX</strong> (WhatsApp)
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mb-6 text-yellow-400">আমাদের সকল সেবাসমূহ</h3>
+            
+            <!-- Services Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid">
+                <!-- Service 1 -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">বায়োমেট্রিক ভেরিফিকেশন সার্ভিস</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ১০০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('বায়োমেট্রিক ভেরিফিকেশন সার্ভিস')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 1 Extra -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">বায়োমেট্রিক হিস্ট্রি চেক</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ১২০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('বায়োমেট্রিক হিস্ট্রি চেক')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">সার্ভার কপি কালেকশন (NID)</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ৫০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('সার্ভার কপি কালেকশন (NID)')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 2 Extra -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">ভোটার আইডি কার্ড কারেকশন</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ১৫০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('ভোটার আইডি কার্ড কারেকশন')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">টিন সার্টিফিকেট (TIN)</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ৮০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('টিন সার্টিফিকেট (TIN)')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 3 Extra -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">নতুন ই-টিন রেজিস্ট্রেশন ও রি-ইস্যু</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ১০০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('নতুন ই-টিন রেজিস্ট্রেশন ও রি-ইস্যু')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">পাসপোর্ট ইনফরমেশন চেক</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ৯০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('পাসপোর্ট ইনফরমেশন চেক')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 4 Extra -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">পাসপোর্ট পুলিশ ভেরিফিকেশন স্ট্যাটাস</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ১৩০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('পাসপোর্ট পুলিশ ভেরিফিকেশন স্ট্যাটাস')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">জন্ম নিবন্ধন অনলাইন কপি</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ৬০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('জন্ম নিবন্ধন অনলাইন কপি')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+
+                <!-- Service 5 Extra -->
+                <div class="bg-gray-800 border border-gray-700 p-5 rounded-xl shadow flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-lg font-bold text-yellow-400 mb-1">জন্ম নিবন্ধন সংশোধন ও বাংলা-ইংরেজি সনদ</h4>
+                        <p class="text-gray-400 text-xs mb-3">ফি: ২০০ টাকা</p>
+                    </div>
+                    <button onclick="requestService('জন্ম নিবন্ধন সংশোধন ও বাংলা-ইংরেজি সনদ')" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded text-xs font-semibold">সেবা নিন</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="contentArea">
-        <div class="loading">⏳ Loading Certificate Data...</div>
-    </div>
-
-    <div class="footer">
-        &copy; 2026 Global Scaffolding & Certifications. All Rights Reserved.
-    </div>
-</div>
-
-<script>
-    // নতুন গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপ ইউআরএল এখানে বসানো হয়েছে:
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzhOv_zAXYey-WJ64VtL8eY0bYca273OjWE3kohBZaOAvJ2KUGE_UPjr_5SapYraDNr3g/exec";
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    async function fetchCertificateData() {
-        const container = document.getElementById('contentArea');
-
-        if (!id) {
-            container.innerHTML = '<div class="error">❌ Please provide a valid Certificate ID in the link!</div>';
-            return;
+    <script>
+        // পেজ লোড হলে চেক করা ইউজার আগে থেকেই লগইন করা আছে কিনা
+        window.onload = function() {
+            let activeUser = localStorage.getItem('current_botolbaba_user');
+            if(activeUser) {
+                showDashboard(JSON.parse(activeUser));
+            }
         }
 
-        try {
-            let response = await fetch(`${WEB_APP_URL}?id=${id}`);
-            let data = await response.json();
+        function switchTab(tab) {
+            if(tab === 'register') {
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('regTabBtn').className = "text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1 text-sm";
+                document.getElementById('loginTabBtn').className = "text-gray-400 hover:text-white pb-1 text-sm";
+            } else {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginTabBtn').className = "text-yellow-400 font-semibold border-b-2 border-yellow-400 pb-1 text-sm";
+                document.getElementById('regTabBtn').className = "text-gray-400 hover:text-white pb-1 text-sm";
+            }
+        }
 
-            if (!data.ID) {
-                container.innerHTML = '<div class="error">❌ Invalid ID or Record Not Found in Database!</div>';
+        // রেজিস্ট্রেশন হ্যান্ডলার
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+            const paymentNumber = document.getElementById('regPaymentNum').value;
+            const msg = document.getElementById('regMsg');
+
+            let users = JSON.parse(localStorage.getItem('botolbaba_all_users')) || [];
+
+            if(users.some(u => u.email === email)) {
+                msg.innerText = "এই ইমেইল দিয়ে ইতিপূর্বে একাউন্ট খোলা হয়েছে!";
+                msg.className = "text-center text-xs mt-3 text-red-400";
                 return;
             }
 
-            // ডেটা সফলভাবে পেলে পেজে শো করানোর লেআউট
-            container.innerHTML = `
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img id="photo" src="${data['Photo URL'] || 'https://via.placeholder.com/120x140?text=No+Photo'}" alt="Candidate Photo" class="profile-img">
-                    <h3 style="color: #004080; margin-top: 10px; font-size: 16px;">CERT-ID: ${data.ID}</h3>
-                </div>
+            const newUser = { name, email, password, paymentNumber };
+            users.push(newUser);
+            localStorage.setItem('botolbaba_all_users', JSON.stringify(users));
+            localStorage.setItem('current_botolbaba_user', JSON.stringify(newUser));
 
-                <div class="info-row"><div class="label">CANDIDATE NAME</div><div class="value">${data['NAME'] || ''}</div></div>
-                <div class="info-row"><div class="label">TYPE</div><div class="value">${data['Type'] || ''}</div></div>
-                <div class="info-row"><div class="label">COMPANY NAME</div><div class="value">${data['Company Name'] || ''}</div></div>
-                <div class="info-row"><div class="label">LOCATION</div><div class="value">${data['Location'] || ''}</div></div>
-                <div class="info-row"><div class="label">COUNTRY</div><div class="value">${data['Country'] || ''}</div></div>
-                <div class="info-row"><div class="label">CERTIFIED AS</div><div class="value">${data['Certified As'] || ''}</div></div>
-                <div class="info-row"><div class="label">IQAMA / ID NO</div><div class="value">${data['Iqama / ID No'] || ''}</div></div>
-                <div class="info-row"><div class="label">ISSUE DATE</div><div class="value">${data['Issue Date'] || ''}</div></div>
-                <div class="info-row"><div class="label">EXPIRY DATE</div><div class="value">${data['Expiry Date'] || ''}</div></div>
-
-                <!-- অটো কিউআর কোড জেনারেটর সেকশন -->
-                <div class="qr-section">
-                    <div id="qrcode"></div>
-                    <div class="qr-text">Scan this QR to verify this certificate</div>
-                </div>
-            `;
-
-            // বর্তমান পেজের লিংকের জন্য অটো কিউআর কোড জেনারেট হবে
-            new QRCode(document.getElementById("qrcode"), {
-                text: window.location.href,
-                width: 110,
-                height: 110,
-            });
-
-        } catch (error) {
-            container.innerHTML = '<div class="error">⚠️ Failed to connect to database. Please try again later.</div>';
+            msg.innerText = "সফলভাবে রেজিস্ট্রেশন সম্পন্ন হয়েছে!";
+            msg.className = "text-center text-xs mt-3 text-green-400";
+            
+            setTimeout(() => {
+                showDashboard(newUser);
+            }, 1000);
         }
-    }
 
-    fetchCertificateData();
-</script>
+        // লগইন হ্যান্ডলার
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPass').value;
+            const msg = document.getElementById('loginMsg');
 
+            let users = JSON.parse(localStorage.getItem('botolbaba_all_users')) || [];
+            let validUser = users.find(u => u.email === email && u.password === password);
+
+            if(validUser) {
+                localStorage.setItem('current_botolbaba_user', JSON.stringify(validUser));
+                showDashboard(validUser);
+            } else {
+                msg.innerText = "ভুল ইমেইল অথবা পাসওয়ার্ড!";
+                msg.className = "text-center text-xs mt-3 text-red-400";
+            }
+        }
+
+        // ড্যাশবোর্ড প্রদর্শন
+        function showDashboard(user) {
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('dashboardContainer').classList.remove('hidden');
+            document.getElementById('welcomeMsg').innerText = `স্বাগতম, ${user.name}! (পেমেন্ট নম্বর: ${user.paymentNumber})`;
+            
+            document.getElementById('navUserArea').innerHTML = `
+                <span class="text-xs bg-gray-700 px-3 py-1 rounded text-gray-300">${user.email}</span>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs font-bold">লগআউট</button>
+            `;
+        }
+
+        // সেবা রিকোয়েস্ট বা অর্ডার ফাংশন
+        function requestService(serviceName) {
+            alert(`আপনার "${serviceName}" সেবাটির রিকোয়েস্ট সফলভাবে গ্রহণ করা হয়েছে। দয়া করে পেমেন্ট কনফার্ম করার জন্য এডমিনের সাথে যোগাযোগ করুন।`);
+        }
+
+        // লগআউট ফাংশন
+        function logout() {
+            localStorage.removeItem('current_botolbaba_user');
+            location.reload();
+        }
+    </script>
 </body>
 </html>
